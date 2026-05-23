@@ -350,9 +350,11 @@ function showApp() {
   const canCreate = rolle === 'direktor' || rolle === 'analyst';
   const canAnfragen = rolle === 'direktor' || rolle === 'koordinator';
   const canAufstieg = rolle === 'beobachter';
+  const canSeeCases = rolle !== 'beobachter';
   document.getElementById('nav-new-case').style.display = canCreate ? 'flex' : 'none';
   document.getElementById('nav-anfragen').style.display = canAnfragen ? 'flex' : 'none';
   document.getElementById('nav-aufstieg').style.display = canAufstieg ? 'flex' : 'none';
+  document.getElementById('nav-cases').style.display = canSeeCases ? 'flex' : 'none';
   document.getElementById('stat-anfragen-card').style.display = canAnfragen ? 'block' : 'none';
   loadStats();
   loadRecentCases();
