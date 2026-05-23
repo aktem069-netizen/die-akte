@@ -435,11 +435,21 @@ async function loadAnfragen() {
     var sl = a.status === 'offen' ? 'OFFEN' : a.status === 'genehmigt' ? 'GENEHMIGT' : 'ABGELEHNT';
     var actions = '';
     if (a.status === 'offen') {
-      actions = '<div class="anfrage-actions"><button class="btn-approve" onclick="bearbeiteAnfrage(\'' + a.id + '\',\'genehmigt\',\'' + a.user_id + '\')">GENEHMIGEN</button><button class="btn-reject" onclick="bearbeiteAnfrage(\'' + a.id + '\',\'abgelehnt\',\'' + a.user_id + '\')">ABLEHNEN</button></div>';
+      actions = '<div class="anfrage-actions">' +
+        '<button class="btn-approve" data-id="' + a.id + '" data-uid="' + a.user_id + '" data-action="genehmigt" onclick="handleAnfrage(this)">GENEHMIGEN<\/button>' +
+        '<button class="btn-reject" data-id="' + a.id + '" data-uid="' + a.user_id + '" data-action="abgelehnt" onclick="handleAnfrage(this)">ABLEHNEN<\/button>' +
+        '<\/div>';
     }
     html += '<div class="anfrage-row"><div class="anfrage-header"><div class="anfrage-user">@' + (a.benutzername || 'Unbekannt') + ' <span style="font-family:var(--mono);font-size:11px;color:var(--text-muted)">&rarr; Feldagent</span></div><span class="anfrage-status-badge ' + sc + '">' + sl + '</span></div><div class="anfrage-text"><strong>Wohnort:</strong> ' + (a.wohnort || '&ndash;') + '<br><strong>Begr&uuml;ndung:</strong> ' + (a.begruendung || '&ndash;') + '</div>' + actions + '</div>';
   });
   el.innerHTML = html;
+}
+
+function handleAnfrage(btn) {
+  var id = btn.getAttribute('data-id');
+  var uid = btn.getAttribute('data-uid');
+  var status = btn.getAttribute('data-action');
+  bearbeiteAnfrage(id, status, uid);
 }
 
 async function bearbeiteAnfrage(id, status, userId) {
