@@ -292,30 +292,24 @@ async function handleLogin() {
   if (!pw) { showMsg('Bitte Passwort eingeben.', 'error'); return; }
   if (Date.now() < loginLockUntil) {
     var sek = Math.ceil((loginLockUntil - Date.now()) / 1000);
-    showMsg('Zu viele Fehlversuche. Bitte ' + sek + ' Sekunden warten.', 'error');
+    showMsg('Zu viele Fehlversuche. Noch ' + sek + ' Sekunden warten.', 'error');
     return;
   }
   showMsg('Anmelden...', '');
-  // Benutzername -> Email aus Profil holen
-  var profRes = await sb.from('profile').select('id, benutzername').eq('benutzername', username).single();
-  if (!profRes.data) { loginAttempts++; checkLoginAttempts(username); showMsg('Benutzername nicht gefunden.', 'error'); return; }
-  var userId = profRes.data.id;
-  // Email aus auth via RPC - nutze gespeicherte Email
-  var { data: userData } = await sb.from('profile').select('id').eq('id', userId).single();
-  // Wir brauchen die Email - hole sie aus users
-  var emailRes = await sb.functions.invoke('get-user-email', { body: { user_id: userId } }).catch(() => null);
-  // Fallback: versuche direkt mit username@die-akte.app
   var fakeEmail = username.toLowerCase().replace(/[^a-z0-9]/g, '') + '@die-akte.internal';
   const { data, error } = await sb.auth.signInWithPassword({ email: fakeEmail, password: pw });
   if (error) {
     loginAttempts++;
-    checkLoginAttempts(username);
-    if (error.message.includes('Invalid login') || error.message.includes('invalid_credentials')) {
-      showMsg('Falsches Passwort. Bitte erneut versuchen.', 'error');
-    } else if (error.message.includes('Email not confirmed')) {
-      showMsg('Konto noch nicht bestätigt. Bitte wende dich an den Direktor.', 'error');
+    if (loginAttempts >= 3) {
+      loginLockUntil = Date.now() + 30000;
+      notifyDirektor(username);
+      showMsg('Zu viele Fehlversuche! 30 Sekunden gesperrt.', 'error');
     } else {
-      showMsg('Fehler beim Anmelden: ' + error.message, 'error');
+      if (error.message.includes('Invalid') || error.message.includes('invalid')) {
+        showMsg('Benutzername oder Passwort falsch.', 'error');
+      } else {
+        showMsg('Fehler: ' + error.message, 'error');
+      }
     }
     return;
   }
@@ -323,6 +317,12 @@ async function handleLogin() {
   currentUser = data.user;
   await loadProfile();
   showApp();
+}
+
+async function notifyDirektor(username) {
+  try {
+    await sb.from('sicherheitswarnungen').insert([{ typ: 'fehlversuche', ziel: username, anzahl: loginAttempts }]);
+  } catch(e) {}
 }
 
 function checkLoginAttempts(username) {
@@ -349,18 +349,17 @@ async function handleRegister() {
   const username = document.getElementById('reg-username').value.trim();
   const pw = document.getElementById('reg-pw').value;
   if (!username) { showMsg('Bitte Benutzernamen eingeben.', 'error'); return; }
-  if (!pw) { showMsg('Bitte Passwort eingeben.', 'error'); return; }
   if (username.length < 3) { showMsg('Benutzername muss mindestens 3 Zeichen haben.', 'error'); return; }
+  if (!pw) { showMsg('Bitte Passwort eingeben.', 'error'); return; }
   if (pw.length < 6) { showMsg('Passwort muss mindestens 6 Zeichen haben.', 'error'); return; }
-  // Prüfe ob Benutzername schon vergeben
-  var checkRes = await sb.from('profile').select('id').eq('benutzername', username).single();
-  if (checkRes.data) { showMsg('Dieser Benutzername ist bereits vergeben. Bitte wähle einen anderen.', 'error'); return; }
+  showMsg('Prüfe Benutzername...', '');
+  var checkRes = await sb.from('profile').select('id').eq('benutzername', username).maybeSingle();
+  if (checkRes.data) { showMsg('Dieser Benutzername ist bereits vergeben.', 'error'); return; }
   showMsg('Registrierung läuft...', '');
-  // Interne fake-email für Supabase Auth
   var fakeEmail = username.toLowerCase().replace(/[^a-z0-9]/g, '') + '@die-akte.internal';
   const { data, error } = await sb.auth.signUp({ email: fakeEmail, password: pw });
   if (error) {
-    if (error.message.includes('already registered')) {
+    if (error.message.includes('already')) {
       showMsg('Dieser Benutzername ist bereits vergeben.', 'error');
     } else {
       showMsg('Fehler: ' + error.message, 'error');
@@ -368,12 +367,14 @@ async function handleRegister() {
     return;
   }
   if (data.user) {
-    var profErr = await sb.from('profile').insert([{ id: data.user.id, benutzername: username, rolle: 'beobachter' }]);
-    if (profErr.error) { showMsg('Fehler beim Erstellen des Profils: ' + profErr.error.message, 'error'); return; }
-    showMsg('✓ Registrierung erfolgreich! Du kannst dich jetzt anmelden.', 'success');
+    await sb.from('profile').insert([{ id: data.user.id, benutzername: username, rolle: 'beobachter' }]);
+    showMsg('Registrierung erfolgreich! Du kannst dich jetzt anmelden.', 'success');
     document.getElementById('reg-username').value = '';
     document.getElementById('reg-pw').value = '';
-    setTimeout(function() { switchTab('login'); document.getElementById('login-username').value = username; }, 2500);
+    setTimeout(function() {
+      switchTab('login');
+      document.getElementById('login-username').value = username;
+    }, 2000);
   }
 }
 
