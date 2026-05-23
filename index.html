@@ -303,7 +303,7 @@ async function handleLogout(){
 }
 
 sb.auth.onAuthStateChange(async(event,session)=>{
-  if(session?.user){currentUser=session.user;await loadProfile();showApp();}
+  if((session && session.user ? session.user : null)){currentUser=session.user;await loadProfile();showApp();}
 });
 
 async function loadProfile(){
@@ -321,8 +321,8 @@ function showApp(){
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app-screen').style.display='block';
   document.getElementById('dash-date').textContent=new Date().toLocaleDateString('de-DE',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  const rolle=currentProfile?.rolle||'beobachter';
-  const username=currentProfile?.benutzername||currentUser?.email;
+  const rolle=(currentProfile ? currentProfile.rolle : 'beobachter')||'beobachter';
+  const username=(currentProfile ? currentProfile.benutzername : '')||currentUser?.email;
   document.getElementById('topbar-username').textContent='@'+username;
   const badge=document.getElementById('topbar-role');
   badge.textContent=ROLLEN[rolle]||rolle.toUpperCase();
@@ -357,7 +357,7 @@ async function loadStats(){
 
 async function loadAnfragenCount(){
   const {data}=await sb.from('aufstiegsanfragen').select('id').eq('status','offen');
-  const n=data?.length||0;
+  const n=(data ? data.length : 0)||0;
   document.getElementById('stat-anfragen').textContent=n;
   const badge=document.getElementById('anfragen-badge');
   badge.textContent=n;badge.style.display=n>0?'inline':'none';
@@ -374,7 +374,7 @@ async function loadAllCases(){
   const el=document.getElementById('cases-list');
   el.innerHTML='<div class="loading">Lade F&auml;lle...</div>';
   const {data}=await sb.from('akten').select('*').order('created_at',{ascending:false});
-  document.getElementById('cases-count').textContent=(data?.length||0)+' F&Auml;LLE';
+  document.getElementById('cases-count').textContent=((data ? data.length : 0)||0)+' F&Auml;LLE';
   if(!data||data.length===0){el.innerHTML='<div class="empty-state"><span class="big">0</span>Noch keine F&auml;lle.</div>';return;}
   el.innerHTML=renderCaseList(data);
 }
@@ -389,22 +389,38 @@ function renderCaseList(data){
   }).join('')+'</div>';
 }
 
-async function loadAnfragen(){
-  const el=document.getElementById('anfragen-list');
-  el.innerHTML='<div class="loading">Lade...</div>';
-  const {data}=await sb.from('aufstiegsanfragen').select('*').order('created_at',{ascending:false});
-  document.getElementById('anfragen-count').textContent=(data?.length||0)+' ANFRAGEN';
-  if(!data||data.length===0){el.innerHTML='<div class="empty-state"><span class="big">0</span>Keine Anfragen vorhanden.</div>';return;}
-  el.innerHTML=data.map(a=>{
-    const sc='status-'+a.status;
-    const sl=a.status==='offen'?'OFFEN':a.status==='genehmigt'?'GENEHMIGT':'ABGELEHNT';
-    const actions=a.status==='offen'?'<div class="anfrage-actions"><button class="btn-approve" onclick="bearbeiteAnfrage(''+a.id+'','genehmigt',''+a.user_id+'')">GENEHMIGEN</button><button class="btn-reject" onclick="bearbeiteAnfrage(''+a.id+'','abgelehnt',''+a.user_id+'')">ABLEHNEN</button></div>':'';
-    return '<div class="anfrage-row"><div class="anfrage-header"><div class="anfrage-user">@'+(a.benutzername||'Unbekannt')+' <span style="font-family:var(--mono);font-size:11px;color:var(--text-muted)">&rarr; Feldagent</span></div><span class="anfrage-status '+sc+'">'+sl+'</span></div><div class="anfrage-text"><strong>Wohnort:</strong> '+(a.wohnort||'&ndash;')+'<br><strong>Begr&uuml;ndung:</strong> '+(a.begruendung||'&ndash;')+'</div>'+actions+'</div>';
-  }).join('');
+async function loadAnfragen() {
+  var el = document.getElementById('anfragen-list');
+  el.innerHTML = '<div class="loading">Lade...</div>';
+  var res = await sb.from('aufstiegsanfragen').select('*').order('created_at', {ascending: false});
+  var data = res.data;
+  document.getElementById('anfragen-count').textContent = (data ? data.length : 0) + ' ANFRAGEN';
+  if (!data || data.length === 0) { el.innerHTML = '<div class="empty-state"><span class="big">0</span>Keine Anfragen vorhanden.</div>'; return; }
+  var html = '';
+  for (var i = 0; i < data.length; i++) {
+    var a = data[i];
+    var sc = 'as-' + a.status;
+    var sl = a.status === 'offen' ? 'OFFEN' : a.status === 'genehmigt' ? 'GENEHMIGT' : 'ABGELEHNT';
+    var acts = '';
+    if (a.status === 'offen') {
+      acts = '<div class="anfrage-actions">' +
+        '<button class="btn-approve" onclick="bearbeiteAnfrage(' + "'" + a.id + "','" + 'genehmigt' + "','" + a.user_id + "'" + ')">GENEHMIGEN</button>' +
+        '<button class="btn-reject" onclick="bearbeiteAnfrage(' + "'" + a.id + "','" + 'abgelehnt' + "','" + a.user_id + "'" + ')">ABLEHNEN</button>' +
+        '</div>';
+    }
+    html += '<div class="anfrage-row">' +
+      '<div class="anfrage-header">' +
+      '<div class="anfrage-user">@' + (a.benutzername || 'Unbekannt') + '</div>' +
+      '<span class="anfrage-status-badge ' + sc + '">' + sl + '</span>' +
+      '</div>' +
+      '<div class="anfrage-text"><strong>Wohnort:</strong> ' + (a.wohnort || '-') + '<br><strong>Begr&uuml;ndung:</strong> ' + (a.begruendung || '-') + '</div>' +
+      acts + '</div>';
+  }
+  el.innerHTML = html;
 }
 
 async function bearbeiteAnfrage(id,status,userId){
-  if(!['direktor','koordinator'].includes(currentProfile?.rolle))return;
+  if(!['direktor','koordinator'].includes((currentProfile ? currentProfile.rolle : 'beobachter')))return;
   await sb.from('aufstiegsanfragen').update({status,bearbeitet_von:currentProfile.benutzername,bearbeitet_am:new Date().toISOString()}).eq('id',id);
   if(status==='genehmigt')await sb.from('profile').update({rolle:'feldagent'}).eq('id',userId);
   loadAnfragen();loadAnfragenCount();
@@ -415,7 +431,7 @@ async function sendAufstieg(){
   const begruendung=document.getElementById('auf-begruendung').value.trim();
   const msg=document.getElementById('aufstieg-msg');
   if(!wohnort||!begruendung){msg.textContent='Bitte alle Felder ausf&uuml;llen.';msg.className='save-msg error';msg.style.display='block';return;}
-  const {error}=await sb.from('aufstiegsanfragen').insert([{user_id:currentUser.id,benutzername:currentProfile?.benutzername,aktuelle_rolle:'beobachter',gewuenschte_rolle:'feldagent',wohnort,begruendung}]);
+  const {error}=await sb.from('aufstiegsanfragen').insert([{user_id:currentUser.id,benutzername:(currentProfile ? currentProfile.benutzername : ''),aktuelle_rolle:'beobachter',gewuenschte_rolle:'feldagent',wohnort,begruendung}]);
   msg.textContent=error?'Fehler: '+error.message:'Anfrage gesendet! Der Koordinator pr&uuml;ft deine Bewerbung.';
   msg.className='save-msg '+(error?'error':'success');
   msg.style.display='block';
@@ -457,7 +473,7 @@ async function saveCase(){
     aktenzeichen:document.getElementById('f-aktenzeichen').value,
     vertraulich:document.getElementById('f-vertraulich').value,
     notizen:document.getElementById('f-notizen').value,
-    erstellt_von:currentProfile?.benutzername||currentUser?.email,
+    erstellt_von:(currentProfile ? currentProfile.benutzername : '')||currentUser?.email,
   };
   const {error}=await sb.from('akten').insert([payload]);
   btn.disabled=false;btn.textContent='AKTE SPEICHERN';
