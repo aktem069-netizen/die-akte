@@ -100,16 +100,16 @@
 <div id="login-screen">
   <div class="login-bg"></div>
   <div class="login-card">
-    <div class="case-id">SYSTEM // ZUGANG EINGESCHRÃNKT</div>
+    <div class="case-id">SYSTEM // ZUGANG EINGESCHR&Auml;NKT</div>
     <div class="login-title">DIE<br>AKTE</div>
-    <div class="login-subtitle">VERMISSTENSUCHE Â· FALLVERWALTUNG Â· KI-ANALYSE</div>
+    <div class="login-subtitle">VERMISSTENSUCHE · FALLVERWALTUNG · KI-ANALYSE</div>
     <div class="field-group">
       <label class="field-label">E-MAIL-ADRESSE</label>
       <input type="email" id="email-input" placeholder="aktem069@gmail.com" autocomplete="email">
     </div>
     <div class="field-group">
       <label class="field-label">PASSWORT</label>
-      <input type="password" id="password-input" placeholder="â¢â¢â¢â¢â¢â¢â¢â¢â¢â¢" autocomplete="current-password">
+      <input type="password" id="password-input" placeholder="••••••••••" autocomplete="current-password">
     </div>
     <button class="btn-primary" onclick="handleLogin()">ZUGANG ANFORDERN</button>
     <div class="login-error" id="login-error"></div>
@@ -133,11 +133,11 @@
       <div class="sidebar-section">
         <div class="sidebar-label">NAVIGATION</div>
         <div class="sidebar-item active" onclick="showPage('dashboard',this)"><div class="dot"></div>Dashboard</div>
-        <div class="sidebar-item" onclick="showPage('cases',this)"><div class="dot"></div>Alle FÃ¤lle</div>
+        <div class="sidebar-item" onclick="showPage('cases',this)"><div class="dot"></div>Alle F&auml;lle</div>
         <div class="sidebar-item" onclick="showPage('new-case',this)"><div class="dot"></div>Neue Akte anlegen</div>
       </div>
       <div class="sidebar-section">
-        <div class="sidebar-label">BALD VERFÃGBAR</div>
+        <div class="sidebar-label">BALD VERF&Uuml;GBAR</div>
         <div class="sidebar-item" style="opacity:0.4;cursor:default"><div class="dot"></div>Karte</div>
         <div class="sidebar-item" style="opacity:0.4;cursor:default"><div class="dot"></div>KI-Analyse</div>
         <div class="sidebar-item" style="opacity:0.4;cursor:default"><div class="dot"></div>Team-Verwaltung</div>
@@ -150,22 +150,22 @@
           <div class="page-meta" id="dash-date"></div>
         </div>
         <div class="stats-grid">
-          <div class="stat-card red"><div class="stat-number" id="stat-active">â</div><div class="stat-label">AKTIVE FÃLLE</div></div>
-          <div class="stat-card"><div class="stat-number" id="stat-total">â</div><div class="stat-label">FÃLLE GESAMT</div></div>
-          <div class="stat-card"><div class="stat-number" id="stat-found">â</div><div class="stat-label">GEFUNDEN</div></div>
+          <div class="stat-card red"><div class="stat-number" id="stat-active">—</div><div class="stat-label">AKTIVE F&Auml;LLE</div></div>
+          <div class="stat-card"><div class="stat-number" id="stat-total">—</div><div class="stat-label">F&Auml;LLE GESAMT</div></div>
+          <div class="stat-card"><div class="stat-number" id="stat-found">—</div><div class="stat-label">GEFUNDEN</div></div>
         </div>
         <div class="form-section">
           <div class="form-section-title">ZULETZT AKTUALISIERT</div>
-          <div id="recent-cases"><div class="loading">Lade FÃ¤lle...</div></div>
+          <div id="recent-cases"><div class="loading">Lade F&auml;lle...</div></div>
         </div>
       </div>
 
       <div class="page" id="page-cases">
         <div class="page-header">
-          <div class="page-title">ALLE FÃLLE</div>
+          <div class="page-title">ALLE F&Auml;LLE</div>
           <div class="page-meta" id="cases-count"></div>
         </div>
-        <div id="cases-list"><div class="loading">Lade FÃ¤lle...</div></div>
+        <div id="cases-list"><div class="loading">Lade F&auml;lle...</div></div>
       </div>
 
       <div class="page" id="page-new-case">
@@ -174,33 +174,33 @@
           <div class="page-meta">FALL ANLEGEN</div>
         </div>
         <div class="form-section">
-          <div class="form-section-title">01 Â· PERSON</div>
+          <div class="form-section-title">01 · PERSON</div>
           <div class="form-grid">
             <div class="form-field"><label class="form-label">VORNAME *</label><input class="form-input" id="f-vorname" type="text" placeholder="Vorname"></div>
             <div class="form-field"><label class="form-label">NACHNAME *</label><input class="form-input" id="f-nachname" type="text" placeholder="Nachname"></div>
             <div class="form-field"><label class="form-label">SPITZNAME / RUFNAME</label><input class="form-input" id="f-spitzname" type="text" placeholder="z.B. Michi"></div>
             <div class="form-field"><label class="form-label">ALTER</label><input class="form-input" id="f-alter" type="number" min="0" max="120" placeholder="z.B. 34"></div>
-            <div class="form-field"><label class="form-label">GESCHLECHT</label><select class="form-select" id="f-geschlecht"><option value="">â wÃ¤hlen â</option><option>MÃ¤nnlich</option><option>Weiblich</option><option>Divers</option><option>Unbekannt</option></select></div>
-            <div class="form-field"><label class="form-label">NATIONALITÃT / SPRACHEN</label><input class="form-input" id="f-nationalitaet" type="text" placeholder="z.B. Deutsch, TÃ¼rkisch"></div>
-            <div class="form-field"><label class="form-label">GRÃSSE (cm)</label><input class="form-input" id="f-groesse" type="number" placeholder="z.B. 175"></div>
+            <div class="form-field"><label class="form-label">GESCHLECHT</label><select class="form-select" id="f-geschlecht"><option value="">– w&auml;hlen –</option><option>M&auml;nnlich</option><option>Weiblich</option><option>Divers</option><option>Unbekannt</option></select></div>
+            <div class="form-field"><label class="form-label">NATIONALIT&Auml;T / SPRACHEN</label><input class="form-input" id="f-nationalitaet" type="text" placeholder="z.B. Deutsch, T&uuml;rkisch"></div>
+            <div class="form-field"><label class="form-label">GR&Ouml;SSE (cm)</label><input class="form-input" id="f-groesse" type="number" placeholder="z.B. 175"></div>
             <div class="form-field"><label class="form-label">STATUR / HAARFARBE / AUGEN</label><input class="form-input" id="f-aussehen" type="text" placeholder="z.B. schlank, braune Haare, blaue Augen"></div>
             <div class="form-field" style="grid-column:span 2"><label class="form-label">BESONDERHEITEN (Tattoos, Narben etc.)</label><input class="form-input" id="f-besonderheiten" type="text" placeholder="z.B. Tattoo linker Unterarm, Narbe Kinn"></div>
           </div>
         </div>
         <div class="form-section">
-          <div class="form-section-title">02 Â· FOTOS</div>
-          <div style="margin-bottom:0.75rem;font-family:var(--mono);font-size:11px;color:var(--text-muted)">1 Hauptfoto (Ã¶ffentlich fÃ¼r Zuschauer) + bis zu 4 weitere (nur Team)</div>
+          <div class="form-section-title">02 · FOTOS</div>
+          <div style="margin-bottom:0.75rem;font-family:var(--mono);font-size:11px;color:var(--text-muted)">1 Hauptfoto (&ouml;ffentlich f&uuml;r Zuschauer) + bis zu 4 weitere (nur Team)</div>
           <div class="form-grid">
             <div class="form-field" style="grid-column:span 2">
-              <label class="form-label">HAUPTFOTO <span style="color:var(--text-dim);font-size:9px">(ÃFFENTLICH â fÃ¼r Zuschauer sichtbar)</span></label>
+              <label class="form-label">HAUPTFOTO <span style="color:var(--text-dim);font-size:9px">(&Ouml;FFENTLICH – f&uuml;r Zuschauer sichtbar)</span></label>
               <div id="main-photo-area" style="border:1px dashed var(--border-red);padding:1.5rem;text-align:center;cursor:pointer;background:var(--bg3);position:relative" onclick="document.getElementById('main-photo-input').click()">
                 <img id="main-photo-preview" src="" style="max-height:200px;max-width:100%;display:none;margin:0 auto">
-                <div id="main-photo-placeholder" style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">Klicken zum Hochladen Â· Hauptfoto</div>
+                <div id="main-photo-placeholder" style="font-family:var(--mono);font-size:12px;color:var(--text-muted)">Klicken zum Hochladen · Hauptfoto</div>
                 <input type="file" id="main-photo-input" accept="image/*" style="display:none" onchange="previewPhoto(this,'main-photo-preview','main-photo-placeholder')">
               </div>
             </div>
             <div class="form-field" style="grid-column:span 2">
-              <label class="form-label">WEITERE FOTOS <span style="color:var(--text-dim);font-size:9px">(NUR TEAM â Tattoos, Merkmale, Ã¤ltere Bilder)</span></label>
+              <label class="form-label">WEITERE FOTOS <span style="color:var(--text-dim);font-size:9px">(NUR TEAM – Tattoos, Merkmale, &auml;ltere Bilder)</span></label>
               <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem">
                 <div class="extra-photo-slot" onclick="document.getElementById('extra-photo-1').click()" style="border:1px dashed var(--border);padding:1rem;text-align:center;cursor:pointer;background:var(--bg3);min-height:80px;display:flex;align-items:center;justify-content:center;position:relative">
                   <img id="extra-preview-1" src="" style="max-height:80px;max-width:100%;display:none">
@@ -228,43 +228,43 @@
         </div>
 
         <div class="form-section">
-          <div class="form-section-title">03 Â· WAS WISSEN WIR?</div>
+          <div class="form-section-title">03 · WAS WISSEN WIR?</div>
           <div class="form-grid">
-            <div class="form-field"><label class="form-label">LETZTER BEKANNTER ORT *</label><input class="form-input" id="f-letzter-ort" type="text" placeholder="z.B. Hauptbahnhof MÃ¼nchen"></div>
+            <div class="form-field"><label class="form-label">LETZTER BEKANNTER ORT *</label><input class="form-input" id="f-letzter-ort" type="text" placeholder="z.B. Hauptbahnhof M&uuml;nchen"></div>
             <div class="form-field"><label class="form-label">DATUM / UHRZEIT</label><input class="form-input" id="f-zeitpunkt" type="datetime-local"></div>
             <div class="form-field"><label class="form-label">WER HAT SIE ZULETZT GESEHEN?</label><input class="form-input" id="f-zuletzt-gesehen" type="text" placeholder="Name + Kontakt"></div>
             <div class="form-field"><label class="form-label">BEKLEIDUNG</label><input class="form-input" id="f-bekleidung" type="text" placeholder="z.B. blaue Jeans, rote Jacke"></div>
-            <div class="form-field"><label class="form-label">MITGENOMMENE GEGENSTÃNDE</label><input class="form-input" id="f-gegenstaende" type="text" placeholder="z.B. Handy, Rucksack, kein Ausweis"></div>
-            <div class="form-field"><label class="form-label">FORTBEWEGUNG</label><select class="form-select" id="f-fortbewegung"><option value="">â wÃ¤hlen â</option><option>Zu FuÃ</option><option>Fahrrad</option><option>Eigenes Auto</option><option>ÃPNV (Bus/Bahn)</option><option>Unbekannt</option></select></div>
+            <div class="form-field"><label class="form-label">MITGENOMMENE GEGENST&Auml;NDE</label><input class="form-input" id="f-gegenstaende" type="text" placeholder="z.B. Handy, Rucksack, kein Ausweis"></div>
+            <div class="form-field"><label class="form-label">FORTBEWEGUNG</label><select class="form-select" id="f-fortbewegung"><option value="">– w&auml;hlen –</option><option>Zu Fu&szlig;</option><option>Fahrrad</option><option>Eigenes Auto</option><option>&Ouml;PNV (Bus/Bahn)</option><option>Unbekannt</option></select></div>
           </div>
         </div>
         <div class="form-section">
-          <div class="form-section-title">04 Â· HINTERGRUND <span style="color:var(--text-dim);font-size:9px;margin-left:0.5rem">INTERN â NICHT IM STREAM ZEIGEN</span></div>
+          <div class="form-section-title">04 · HINTERGRUND <span style="color:var(--text-dim);font-size:9px;margin-left:0.5rem">INTERN – NICHT IM STREAM ZEIGEN</span></div>
           <div class="form-grid">
-            <div class="form-field"><label class="form-label">PSYCHISCHE VERFASSUNG</label><select class="form-select" id="f-psyche"><option value="">â wÃ¤hlen â</option><option>Stabil</option><option>Depressiv</option><option>Euphorisch / manisch</option><option>Ãngstlich</option><option>Streit vorher</option><option>Unbekannt</option></select></div>
-            <div class="form-field"><label class="form-label">SUIZIDGEFÃHRDUNG</label><select class="form-select" id="f-suizid"><option value="">â wÃ¤hlen â</option><option>Nein</option><option>Unklar</option><option>Ja â intern behandeln</option></select></div>
-            <div class="form-field" style="grid-column:span 2"><label class="form-label">DROGEN / ALKOHOL / MEDIKAMENTE</label><input class="form-input" id="f-substanzen" type="text" placeholder="z.B. Alkohol tÃ¤glich, Heroin, Insulin-abhÃ¤ngig"></div>
+            <div class="form-field"><label class="form-label">PSYCHISCHE VERFASSUNG</label><select class="form-select" id="f-psyche"><option value="">– w&auml;hlen –</option><option>Stabil</option><option>Depressiv</option><option>Euphorisch / manisch</option><option>&Auml;ngstlich</option><option>Streit vorher</option><option>Unbekannt</option></select></div>
+            <div class="form-field"><label class="form-label">SUIZIDGEF&Auml;HRDUNG</label><select class="form-select" id="f-suizid"><option value="">– w&auml;hlen –</option><option>Nein</option><option>Unklar</option><option>Ja – intern behandeln</option></select></div>
+            <div class="form-field" style="grid-column:span 2"><label class="form-label">DROGEN / ALKOHOL / MEDIKAMENTE</label><input class="form-input" id="f-substanzen" type="text" placeholder="z.B. Alkohol t&auml;glich, Heroin, Insulin-abh&auml;ngig"></div>
             <div class="form-field" style="grid-column:span 2"><label class="form-label">VORERKRANKUNGEN</label><input class="form-input" id="f-erkrankungen" type="text" placeholder="z.B. Demenz, Epilepsie, Schizophrenie"></div>
-            <div class="form-field" style="grid-column:span 2"><label class="form-label">FRÃHERE VERMISSTENFÃLLE</label><input class="form-input" id="f-vorgeschichte" type="text" placeholder="z.B. 2x verschwunden, immer am Bahnhof gefunden"></div>
+            <div class="form-field" style="grid-column:span 2"><label class="form-label">FR&Uuml;HERE VERMISSTENF&Auml;LLE</label><input class="form-input" id="f-vorgeschichte" type="text" placeholder="z.B. 2x verschwunden, immer am Bahnhof gefunden"></div>
           </div>
         </div>
         <div class="form-section">
-          <div class="form-section-title">05 Â· UMFELD</div>
+          <div class="form-section-title">05 · UMFELD</div>
           <div class="form-grid">
-            <div class="form-field" style="grid-column:span 2"><label class="form-label">FAMILIE / ENGER KREIS</label><textarea class="form-textarea" id="f-familie" placeholder="z.B. Mutter: Anna M., 089-xxx Â· Bruder: Max M., unbekannt"></textarea></div>
-            <div class="form-field" style="grid-column:span 2"><label class="form-label">BEKANNTE STAMMORTE</label><textarea class="form-textarea" id="f-stammorte" placeholder="z.B. Stadtpark, Bahnhof Ostbahnhof, CafÃ© MÃ¼ller (Schillerstr.)"></textarea></div>
+            <div class="form-field" style="grid-column:span 2"><label class="form-label">FAMILIE / ENGER KREIS</label><textarea class="form-textarea" id="f-familie" placeholder="z.B. Mutter: Anna M., 089-xxx · Bruder: Max M., unbekannt"></textarea></div>
+            <div class="form-field" style="grid-column:span 2"><label class="form-label">BEKANNTE STAMMORTE</label><textarea class="form-textarea" id="f-stammorte" placeholder="z.B. Stadtpark, Bahnhof Ostbahnhof, Café M&uuml;ller (Schillerstr.)"></textarea></div>
             <div class="form-field"><label class="form-label">SOCIAL MEDIA PROFILE</label><input class="form-input" id="f-socialmedia" type="text" placeholder="z.B. Instagram: @maxm, TikTok: @max.m"></div>
             <div class="form-field"><label class="form-label">ARBEITSPLATZ / SCHULE</label><input class="form-input" id="f-arbeit" type="text" placeholder="z.B. Lidl Schwabing, oder: aktuell ohne Job"></div>
           </div>
         </div>
         <div class="form-section">
-          <div class="form-section-title">06 Â· FALLVERWALTUNG</div>
+          <div class="form-section-title">06 · FALLVERWALTUNG</div>
           <div class="form-grid">
             <div class="form-field"><label class="form-label">STATUS</label><select class="form-select" id="f-status"><option value="aktiv">Aktiv vermisst</option><option value="spur">Spur vorhanden</option><option value="gefunden">Gefunden (lebendig)</option><option value="geschlossen">Suche eingestellt</option></select></div>
-            <div class="form-field"><label class="form-label">QUELLE DES HINWEISES</label><select class="form-select" id="f-quelle"><option value="">â wÃ¤hlen â</option><option>Familie</option><option>Freunde</option><option>Polizei</option><option>Zuschauer (Stream)</option><option>Sonstige</option></select></div>
+            <div class="form-field"><label class="form-label">QUELLE DES HINWEISES</label><select class="form-select" id="f-quelle"><option value="">– w&auml;hlen –</option><option>Familie</option><option>Freunde</option><option>Polizei</option><option>Zuschauer (Stream)</option><option>Sonstige</option></select></div>
             <div class="form-field"><label class="form-label">POLIZEILICHES AKTENZEICHEN</label><input class="form-input" id="f-aktenzeichen" type="text" placeholder="z.B. POL-2024-001234"></div>
-            <div class="form-field"><label class="form-label">VERTRAULICHKEIT</label><select class="form-select" id="f-vertraulich"><option value="team">Nur Team (intern)</option><option value="oeffentlich">Ãffentlich (Stream-tauglich)</option></select></div>
-            <div class="form-field" style="grid-column:span 2"><label class="form-label">ZUSÃTZLICHE NOTIZEN</label><textarea class="form-textarea" id="f-notizen" placeholder="Alles weitere, was wichtig sein kÃ¶nnte..."></textarea></div>
+            <div class="form-field"><label class="form-label">VERTRAULICHKEIT</label><select class="form-select" id="f-vertraulich"><option value="team">Nur Team (intern)</option><option value="oeffentlich">&Ouml;ffentlich (Stream-tauglich)</option></select></div>
+            <div class="form-field" style="grid-column:span 2"><label class="form-label">ZUS&Auml;TZLICHE NOTIZEN</label><textarea class="form-textarea" id="f-notizen" placeholder="Alles weitere, was wichtig sein k&ouml;nnte..."></textarea></div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap">
@@ -339,7 +339,7 @@ async function loadRecentCases() {
   const { data } = await sb.from('akten').select('*').order('created_at', {ascending: false}).limit(5);
   const el = document.getElementById('recent-cases');
   if (!data || data.length === 0) {
-    el.innerHTML = '<div class="empty-state"><span class="big">0</span>Noch keine FÃ¤lle angelegt</div>';
+    el.innerHTML = '<div class="empty-state"><span class="big">0</span>Noch keine F&auml;lle angelegt</div>';
     return;
   }
   el.innerHTML = renderCaseList(data);
@@ -347,15 +347,15 @@ async function loadRecentCases() {
 
 async function loadAllCases() {
   const el = document.getElementById('cases-list');
-  el.innerHTML = '<div class="loading">Lade FÃ¤lle...</div>';
+  el.innerHTML = '<div class="loading">Lade F&auml;lle...</div>';
   const { data } = await sb.from('akten').select('*').order('created_at', {ascending: false});
   const countEl = document.getElementById('cases-count');
   if (!data || data.length === 0) {
-    el.innerHTML = '<div class="empty-state"><span class="big">0</span>Noch keine FÃ¤lle angelegt.</div>';
-    countEl.textContent = '0 FÃLLE';
+    el.innerHTML = '<div class="empty-state"><span class="big">0</span>Noch keine F&auml;lle angelegt.</div>';
+    countEl.textContent = '0 F&Auml;LLE';
     return;
   }
-  countEl.textContent = data.length + ' FÃLLE';
+  countEl.textContent = data.length + ' F&Auml;LLE';
   el.innerHTML = renderCaseList(data);
 }
 
@@ -365,7 +365,7 @@ function renderCaseList(data) {
     const bc = c.status === 'aktiv' ? 'badge-active' : c.status === 'gefunden' ? 'badge-found' : 'badge-closed';
     const st = c.status === 'aktiv' ? 'AKTIV' : c.status === 'gefunden' ? 'GEFUNDEN' : c.status === 'spur' ? 'SPUR' : 'GESCHLOSSEN';
     const date = new Date(c.created_at).toLocaleDateString('de-DE');
-    return `<div class="case-row"><div class="case-status ${sc}"></div><div><div class="case-name">${c.vorname||''} ${c.nachname||''}</div><div class="case-meta">${c.letzter_ort||'Ort unbekannt'} Â· Angelegt ${date}</div></div><div class="case-badge ${bc}">${st}</div></div>`;
+    return `<div class="case-row"><div class="case-status ${sc}"></div><div><div class="case-name">${c.vorname||''} ${c.nachname||''}</div><div class="case-meta">${c.letzter_ort||'Ort unbekannt'} · Angelegt ${date}</div></div><div class="case-badge ${bc}">${st}</div></div>`;
   }).join('') + '</div>';
 }
 
@@ -455,7 +455,7 @@ async function saveCase() {
     msg.textContent = 'Fehler: ' + error.message;
     msg.className = 'save-msg error';
   } else {
-    msg.textContent = 'Akte gespeichert â Fotos werden hochgeladen...';
+    msg.textContent = 'Akte gespeichert – Fotos werden hochgeladen...';
     msg.className = 'save-msg success';
     if (data && data[0]) await uploadPhotos(data[0].id);
     msg.textContent = 'Akte und Fotos erfolgreich gespeichert.';
