@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Die Akte</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23C8102E'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='serif' font-weight='bold' font-size='20' fill='white'%3EA%3C/text%3E%3C/svg%3E">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
@@ -119,14 +118,14 @@
       <button class="login-tab" id="tab-btn-register" onclick="switchTab('register')">REGISTRIEREN</button>
     </div>
     <div id="tab-login">
-      <div class="field-group"><label class="field-label">BENUTZERNAME</label><input type="text" id="login-username" class="field-input" placeholder="dein Benutzername" autocomplete="username"></div>
+      <div class="field-group"><label class="field-label">BENUTZERNAME</label><input type="text" id="login-username" class="field-input" placeholder="dein Benutzername"></div>
       <div class="field-group"><label class="field-label">PASSWORT</label><input type="password" id="login-pw" class="field-input" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"></div>
       <button class="btn-primary" onclick="handleLogin()">ZUGANG ANFORDERN</button>
     </div>
     <div id="tab-register" style="display:none">
       <div class="hint-box">&gt; Als Beobachter kannst du Hinweise einreichen und einen Aufstieg zum Feldagenten beantragen.</div>
       <div class="field-group"><label class="field-label">BENUTZERNAME</label><input type="text" id="reg-username" class="field-input" placeholder="z.B. Falke_Berlin"></div>
-      <div class="field-group"><label class="field-label">PASSWORT</label><input type="password" id="reg-pw" class="field-input" placeholder="mindestens 8 Zeichen"></div>
+      <div class="field-group"><label class="field-label">PASSWORT</label><input type="password" id="reg-pw" class="field-input" placeholder="mindestens 6 Zeichen"></div>
       <button class="btn-primary" onclick="handleRegister()">ALS BEOBACHTER REGISTRIEREN</button>
     </div>
     <div class="login-msg" id="login-msg"></div>
@@ -291,25 +290,21 @@ async function handleLogin() {
   if (!username) { showMsg('Bitte Benutzernamen eingeben.', 'error'); return; }
   if (!pw) { showMsg('Bitte Passwort eingeben.', 'error'); return; }
   if (Date.now() < loginLockUntil) {
-    var sek = Math.ceil((loginLockUntil - Date.now()) / 1000);
+    const sek = Math.ceil((loginLockUntil - Date.now()) / 1000);
     showMsg('Zu viele Fehlversuche. Noch ' + sek + ' Sekunden warten.', 'error');
     return;
   }
   showMsg('Anmelden...', '');
-  var fakeEmail = username.toLowerCase().replace(/[^a-z0-9]/g, '') + '@die-akte.internal';
+  const fakeEmail = username.toLowerCase().replace(/[^a-z0-9]/g, '') + '@die-akte.internal';
   const { data, error } = await sb.auth.signInWithPassword({ email: fakeEmail, password: pw });
   if (error) {
     loginAttempts++;
     if (loginAttempts >= 3) {
       loginLockUntil = Date.now() + 30000;
-      notifyDirektor(username);
+      try { await sb.from('sicherheitswarnungen').insert([{ typ: 'fehlversuche', ziel: username, anzahl: loginAttempts }]); } catch(e) {}
       showMsg('Zu viele Fehlversuche! 30 Sekunden gesperrt.', 'error');
     } else {
-      if (error.message.includes('Invalid') || error.message.includes('invalid')) {
-        showMsg('Benutzername oder Passwort falsch.', 'error');
-      } else {
-        showMsg('Fehler: ' + error.message, 'error');
-      }
+      showMsg('Benutzername oder Passwort falsch. (' + loginAttempts + '/3)', 'error');
     }
     return;
   }
@@ -319,44 +314,17 @@ async function handleLogin() {
   showApp();
 }
 
-async function notifyDirektor(username) {
-  try {
-    await sb.from('sicherheitswarnungen').insert([{ typ: 'fehlversuche', ziel: username, anzahl: loginAttempts }]);
-  } catch(e) {}
-}
-
-function checkLoginAttempts(username) {
-  if (loginAttempts >= 3) {
-    loginLockUntil = Date.now() + 30000;
-    showMsg('Zu viele Fehlversuche. 30 Sekunden gesperrt.', 'error');
-    // Direktor benachrichtigen
-    notifyDirektor(username);
-  }
-}
-
-async function notifyDirektor(username) {
-  try {
-    await sb.from('sicherheitswarnungen').insert([{
-      typ: 'mehrfache_fehlversuche',
-      ziel: username,
-      anzahl: loginAttempts,
-      zeitpunkt: new Date().toISOString()
-    }]);
-  } catch(e) {}
-}
-
 async function handleRegister() {
   const username = document.getElementById('reg-username').value.trim();
   const pw = document.getElementById('reg-pw').value;
   if (!username) { showMsg('Bitte Benutzernamen eingeben.', 'error'); return; }
   if (username.length < 3) { showMsg('Benutzername muss mindestens 3 Zeichen haben.', 'error'); return; }
-  if (!pw) { showMsg('Bitte Passwort eingeben.', 'error'); return; }
-  if (pw.length < 6) { showMsg('Passwort muss mindestens 6 Zeichen haben.', 'error'); return; }
-  showMsg('Prüfe Benutzername...', '');
-  var checkRes = await sb.from('profile').select('id').eq('benutzername', username).maybeSingle();
-  if (checkRes.data) { showMsg('Dieser Benutzername ist bereits vergeben.', 'error'); return; }
-  showMsg('Registrierung läuft...', '');
-  var fakeEmail = username.toLowerCase().replace(/[^a-z0-9]/g, '') + '@die-akte.internal';
+  if (!pw || pw.length < 6) { showMsg('Passwort muss mindestens 6 Zeichen haben.', 'error'); return; }
+  showMsg('Pr&uuml;fe Benutzername...', '');
+  const { data: existing } = await sb.from('profile').select('id').eq('benutzername', username).maybeSingle();
+  if (existing) { showMsg('Dieser Benutzername ist bereits vergeben.', 'error'); return; }
+  showMsg('Registrierung l&auml;uft...', '');
+  const fakeEmail = username.toLowerCase().replace(/[^a-z0-9]/g, '') + '@die-akte.internal';
   const { data, error } = await sb.auth.signUp({ email: fakeEmail, password: pw });
   if (error) {
     if (error.message.includes('already')) {
@@ -368,7 +336,7 @@ async function handleRegister() {
   }
   if (data.user) {
     await sb.from('profile').insert([{ id: data.user.id, benutzername: username, rolle: 'beobachter' }]);
-    showMsg('Registrierung erfolgreich! Du kannst dich jetzt anmelden.', 'success');
+    showMsg('&#10003; Registrierung erfolgreich! Du kannst dich jetzt anmelden.', 'success');
     document.getElementById('reg-username').value = '';
     document.getElementById('reg-pw').value = '';
     setTimeout(function() {
@@ -418,11 +386,9 @@ function showApp() {
   const canCreate = rolle === 'direktor' || rolle === 'analyst';
   const canAnfragen = rolle === 'direktor' || rolle === 'koordinator';
   const canAufstieg = rolle === 'beobachter';
-  const canSeeCases = rolle !== 'beobachter';
   document.getElementById('nav-new-case').style.display = canCreate ? 'flex' : 'none';
   document.getElementById('nav-anfragen').style.display = canAnfragen ? 'flex' : 'none';
   document.getElementById('nav-aufstieg').style.display = canAufstieg ? 'flex' : 'none';
-  document.getElementById('nav-cases').style.display = canSeeCases ? 'flex' : 'none';
   document.getElementById('stat-anfragen-card').style.display = canAnfragen ? 'block' : 'none';
   loadStats();
   loadRecentCases();
@@ -505,21 +471,11 @@ async function loadAnfragen() {
     var sl = a.status === 'offen' ? 'OFFEN' : a.status === 'genehmigt' ? 'GENEHMIGT' : 'ABGELEHNT';
     var actions = '';
     if (a.status === 'offen') {
-      actions = '<div class="anfrage-actions">' +
-        '<button class="btn-approve" data-id="' + a.id + '" data-uid="' + a.user_id + '" data-action="genehmigt" onclick="handleAnfrage(this)">GENEHMIGEN<\/button>' +
-        '<button class="btn-reject" data-id="' + a.id + '" data-uid="' + a.user_id + '" data-action="abgelehnt" onclick="handleAnfrage(this)">ABLEHNEN<\/button>' +
-        '<\/div>';
+      actions = '<div class="anfrage-actions"><button class="btn-approve" onclick="bearbeiteAnfrage(\'' + a.id + '\',\'genehmigt\',\'' + a.user_id + '\')">GENEHMIGEN</button><button class="btn-reject" onclick="bearbeiteAnfrage(\'' + a.id + '\',\'abgelehnt\',\'' + a.user_id + '\')">ABLEHNEN</button></div>';
     }
     html += '<div class="anfrage-row"><div class="anfrage-header"><div class="anfrage-user">@' + (a.benutzername || 'Unbekannt') + ' <span style="font-family:var(--mono);font-size:11px;color:var(--text-muted)">&rarr; Feldagent</span></div><span class="anfrage-status-badge ' + sc + '">' + sl + '</span></div><div class="anfrage-text"><strong>Wohnort:</strong> ' + (a.wohnort || '&ndash;') + '<br><strong>Begr&uuml;ndung:</strong> ' + (a.begruendung || '&ndash;') + '</div>' + actions + '</div>';
   });
   el.innerHTML = html;
-}
-
-function handleAnfrage(btn) {
-  var id = btn.getAttribute('data-id');
-  var uid = btn.getAttribute('data-uid');
-  var status = btn.getAttribute('data-action');
-  bearbeiteAnfrage(id, status, uid);
 }
 
 async function bearbeiteAnfrage(id, status, userId) {
