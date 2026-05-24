@@ -363,15 +363,8 @@ sb.auth.onAuthStateChange(async function(event, session) {
 
 async function loadProfile() {
   if (!currentUser) return;
-  const { data, error } = await sb.from('profile').select('*').eq('id', currentUser.id).single();
-  if (data) {
-    currentProfile = data;
-  } else {
-    // Kein Profil gefunden - warte kurz und versuche nochmal (Race condition nach Registrierung)
-    await new Promise(r => setTimeout(r, 1000));
-    const { data: data2 } = await sb.from('profile').select('*').eq('id', currentUser.id).single();
-    currentProfile = data2 || null;
-  }
+  const { data } = await sb.from('profile').select('*').eq('id', currentUser.id).maybeSingle();
+  currentProfile = data || null;
 }
 
 function showApp() {
